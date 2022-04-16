@@ -1,1 +1,67 @@
-dfghjk
+#!groovy
+def remote = [:]
+remote.name = 'root'
+remote.host = '192.168.1.110'
+remote.user = 'root'
+remote.password = 'root1234'
+remote.allowAnyHosts = true
+pipeline {
+    //在任何可用的代理上执行Pipeline
+    agent any
+
+    //环境变量，初始确定后一般不需更改
+    tools {
+        maven "M3"
+
+    }
+    //常量参数，初始确定后一般不需更改
+    environment{
+        cred_id='fccdace1-4140-4ebf-ac9d-08768d1a370d'
+        source='https://github.com/jiangyouwei1/parent.git'
+        branch='master'
+        active='server'
+
+        maven_command='mvn -U clean package -Dmaven.test.skip=true'
+        app_name = 'eureka'
+        image_name = "192.168.1.119/demo/${app_name}:latest"
+    }
+    //pipeline的各个阶段场景
+    stages {
+
+        stage('获取代码') {
+            steps {
+              echo "starting fetchCode from ${source}......"
+              // Get some code from a GitHub repository
+              git credentialsId:cred_id, url:source, branch:branch
+            }
+
+        }
+
+        stage('Build Project & Unit Test') {
+            steps {
+                sh '''
+                 $maven_command
+              '''
+            }
+        }
+
+        stage ('Build Docker Image') {
+            steps {
+                sh '''
+                  rm -rf Dockerfile \
+                 // && cp ../usedcar-file-config/ucpd-swarm/dockerfile-$active/$app_name.dkf ./Dockerfile \
+                  && docker build -t ${image_name} . \
+                  && docker push ${image_name} 
+                  '''
+            }
+        }
+
+        stage('deploy') {
+            steps {
+                echo 'deploy project'
+            }
+        }
+    }
+
+
+}
