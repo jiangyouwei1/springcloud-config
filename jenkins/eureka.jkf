@@ -16,7 +16,7 @@ pipeline {
     }
     //常量参数，初始确定后一般不需更改
     environment{
-        cred_id='fccdace1-4140-4ebf-ac9d-08768d1a370d'
+        cred_id='test-git'
         source='https://github.com/jiangyouwei1/parent.git'
         branch='master'
         active='server'
