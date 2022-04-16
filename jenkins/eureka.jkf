@@ -48,10 +48,7 @@ pipeline {
         stage ('Build Docker Image') {
             steps {
                 sh '''
-                  rm -rf Dockerfile \
-                 // && cp ../usedcar-file-config/ucpd-swarm/dockerfile-$active/$app_name.dkf ./Dockerfile \
-                  && docker build -t ${image_name} . \
-                  && docker push ${image_name} 
+                    echo '1234'
                   '''
             }
         }
