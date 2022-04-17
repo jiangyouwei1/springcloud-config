@@ -28,7 +28,7 @@ pipeline {
     //pipeline的各个阶段场景
     stages {
 
-        stage('获取代码') {
+        stage('Preparation') {
             steps {
               echo "starting fetchCode from ${source}......"
               // Get some code from a GitHub repository
